@@ -1,37 +1,29 @@
 package com.kieronwiltshire.essentials.core.services;
 
 import com.google.common.base.Optional;
+import com.kieronwiltshire.essentials.core.api.RequestService;
 import com.kieronwiltshire.essentials.core.services.request.Request;
 import org.spongepowered.api.entity.player.Player;
 
 import java.util.*;
 
-public class RequestService {
+public class EssentialsRequest implements RequestService {
 
     private HashMap<Request, Player> requests;
 
     /**
-     * RequestService constructor
+     * EssentialsRequest constructor
      */
-    public RequestService() {
+    public EssentialsRequest() {
         this.requests = new HashMap<Request, Player>();
     }
 
-    /**
-     * Send a request
-     *
-     * @param recipient The recipient
-     * @param request The request
-     */
+    @Override
     public void send(Player recipient, Request request) {
         this.requests.put(request, recipient);
     }
 
-    /**
-     * Accept a request
-     *
-     * @param request The request
-     */
+    @Override
     public void accept(Request request) {
         if (this.requests.containsKey(request)) {
             request.onAccept(this.requests.get(request));
@@ -39,11 +31,7 @@ public class RequestService {
         }
     }
 
-    /**
-     * Decline a request
-     *
-     * @param request The request
-     */
+    @Override
     public void decline(Request request) {
         if (this.requests.containsKey(request)) {
             request.onDecline(this.requests.get(request));
@@ -51,12 +39,7 @@ public class RequestService {
         }
     }
 
-    /**
-     * Get a pending request
-     *
-     * @param id The id of the request
-     * @return The request
-     */
+    @Override
     public Optional<Request> getRequest(UUID id) {
         for(Iterator<Request> iter = this.requests.keySet().iterator(); iter.hasNext();) {
             Request req = iter.next();
@@ -67,21 +50,12 @@ public class RequestService {
         return Optional.<Request>absent();
     }
 
-    /**
-     * Get all requests
-     *
-     * @return A collection of requests
-     */
+    @Override
     public Collection<Request> getRequests() {
         return this.requests.keySet();
     }
 
-    /**
-     * Get all requests
-     *
-     * @param source The recipient of the requests you wish to retrieve
-     * @return A collection of requests sent to the specified source
-     */
+    @Override
     public Collection<Request> getRequests(Player source) {
         List<Request> collection = new ArrayList<Request>();
         for(Iterator<Request> iter = this.requests.keySet().iterator(); iter.hasNext();) {
@@ -93,12 +67,7 @@ public class RequestService {
         return collection;
     }
 
-    /**
-     * Get the recipient
-     *
-     * @param request The request
-     * @return The recipient of the request specified
-     */
+    @Override
     public Optional<Player> getRecipient(Request request) {
         if (this.requests.containsKey(request)) {
             return Optional.of(this.requests.get(request));
@@ -106,21 +75,12 @@ public class RequestService {
         return Optional.<Player>absent();
     }
 
-    /**
-     * Get the recipients
-     *
-     * @return The recipients with currently pending requests
-     */
+    @Override
     public Collection<Player> getRecipients() {
         return new HashSet<Player>(this.requests.values());
     }
 
-    /**
-     * Get the recipients
-     *
-     * @param type The type of request
-     * @return The recipients with currently pending requests of the specified type
-     */
+    @Override
     public Collection<Player> getRecipients(Class<Request> type) {
         Set<Player> collection = new HashSet<Player>();
         for(Iterator<Request> iter = this.requests.keySet().iterator(); iter.hasNext();) {
