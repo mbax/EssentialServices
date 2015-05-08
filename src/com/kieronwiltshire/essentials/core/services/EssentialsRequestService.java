@@ -2,19 +2,19 @@ package com.kieronwiltshire.essentials.core.services;
 
 import com.google.common.base.Optional;
 import com.kieronwiltshire.essentials.core.api.RequestService;
-import com.kieronwiltshire.essentials.core.services.request.Request;
+import com.kieronwiltshire.essentials.core.api.request.Request;
 import org.spongepowered.api.entity.player.Player;
 
 import java.util.*;
 
-public class EssentialsRequest implements RequestService {
+public class EssentialsRequestService implements RequestService {
 
     private HashMap<Request, Player> requests;
 
     /**
-     * EssentialsRequest constructor
+     * EssentialsRequestService constructor
      */
-    public EssentialsRequest() {
+    public EssentialsRequestService() {
         this.requests = new HashMap<Request, Player>();
     }
 

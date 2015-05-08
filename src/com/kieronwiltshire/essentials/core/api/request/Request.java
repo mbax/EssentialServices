@@ -1,4 +1,4 @@
-package com.kieronwiltshire.essentials.core.services.request;
+package com.kieronwiltshire.essentials.core.api.request;
 
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.Identifiable;

@@ -1,7 +1,7 @@
 package com.kieronwiltshire.essentials.core.api;
 
 import com.google.common.base.Optional;
-import com.kieronwiltshire.essentials.core.services.request.Request;
+import com.kieronwiltshire.essentials.core.api.request.Request;
 import org.spongepowered.api.entity.player.Player;
 
 import java.util.Collection;
