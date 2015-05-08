@@ -43,8 +43,8 @@ Temporary Items
 .apdisk
 
 # IntelliJ
-.idea
-.iml
+*.idea
+*.iml
 
 # Gradle
-.gradle
+*.gradle
