@@ -1,4 +1,4 @@
-package com.kieronwiltshire.essentials;
+package com.kieronwiltshire.essential_services;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -6,22 +6,22 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
-@Plugin(id = "Essentials", name = "Essentials", version = "4.0.0")
-public class Essentials {
+@Plugin(id = "EssentialServices", name = "EssentialServices", version = "1.0.0")
+public class EssentialServices {
 
     private Game game;
     private PluginContainer pluginContainer;
     private Logger logger;
 
     /**
-     * Essentials Constructor
+     * EssentialServices Constructor
      *
      * @param game The Game instance
      * @param pluginContainer The PluginContainer instance
      * @param logger The Logger instance
      */
     @Inject
-    public Essentials(Game game, PluginContainer pluginContainer, Logger logger) {
+    public EssentialServices(Game game, PluginContainer pluginContainer, Logger logger) {
         this.game = game;
         this.pluginContainer = pluginContainer;
         this.logger = logger;
