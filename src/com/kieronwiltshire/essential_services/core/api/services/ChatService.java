@@ -12,12 +12,28 @@ import java.util.UUID;
 public interface ChatService {
 
     /**
-     * Send a message to a channel
+     * Register a channel
      *
      * @param channel The channel
-     * @param message The message
+     * @return True if the specified channel was registered
      */
-    void send(Channel channel, Text message);
+    boolean register(Channel channel);
+
+    /**
+     * Unregister a channel
+     *
+     * @param channel The channel
+     * @return True if the specified channel was unregistered
+     */
+    boolean unregister(Channel channel);
+
+    /**
+     * Unregister a channel
+     *
+     * @param id The channel identifier
+     * @return True if the channel with the specified identifier was unregistered
+     */
+    boolean unregister(UUID id);
 
     /**
      * Add a player to a specific channel
@@ -36,9 +52,17 @@ public interface ChatService {
     void leave(Channel channel, User user);
 
     /**
+     * Send a message to a channel
+     *
+     * @param channel The channel
+     * @param message The message
+     */
+    void send(Channel channel, Text message);
+
+    /**
      * Get a channel
      *
-     * @param id The id
+     * @param id The channel identifier
      * @return Get a channel with the specified identifier
      */
     Optional<Channel> getChannel(UUID id);

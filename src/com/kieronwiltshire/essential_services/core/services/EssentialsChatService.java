@@ -22,14 +22,30 @@ public class EssentialsChatService implements ChatService {
     }
 
     @Override
-    public void send(Channel channel, Text message) throws NullPointerException {
-        for (User user : this.getUsers(channel)) {
-            if (user.isOnline()) {
-                if (user.getPlayer().isPresent()) {
-                    user.getPlayer().get().sendMessage(ChatTypes.CHAT, message);
-                }
-            }
+    public boolean register(Channel channel) {
+        if (!this.channels.containsKey(channel)) {
+            this.channels.put(channel, new ArrayList<User>());
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean unregister(Channel channel) {
+        if (this.channels.containsKey(channel)) {
+            this.channels.remove(channel);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean unregister(UUID id) {
+        if (this.getChannel(id).isPresent()) {
+            this.unregister(this.getChannel(id).get());
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -41,13 +57,7 @@ public class EssentialsChatService implements ChatService {
                     collection.add(user);
                 }
             }
-            return;
         }
-
-        List<User> collection = new ArrayList<User>();
-        collection.add(user);
-
-        this.channels.put(channel, collection);
     }
 
     @Override
@@ -56,6 +66,17 @@ public class EssentialsChatService implements ChatService {
             Collection<User> collection = this.channels.get(channel);
             if (collection.contains(user)) {
                 collection.remove(user);
+            }
+        }
+    }
+
+    @Override
+    public void send(Channel channel, Text message) throws NullPointerException {
+        for (User user : this.getUsers(channel)) {
+            if (user.isOnline()) {
+                if (user.getPlayer().isPresent()) {
+                    user.getPlayer().get().sendMessage(ChatTypes.CHAT, message);
+                }
             }
         }
     }
