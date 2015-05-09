@@ -47,4 +47,5 @@ Temporary Items
 *.iml
 
 # Gradle
-*.gradle
+gradlew
+.gradle/
