@@ -1,4 +1,4 @@
-package com.kieronwiltshire.essential_services.core.services.indices;
+package com.kieronwiltshire.essential_services.core.indices;
 
 import com.kieronwiltshire.essential_services.core.api.index.Index;
 
