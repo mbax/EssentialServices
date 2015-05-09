@@ -1,3 +1,7 @@
+/**
+ * The design of the request service is highly influenced from the
+ * DoubleCheck confirmation service that was created by Felix Schmidt.
+ */
 package com.kieronwiltshire.essentials.core.api.request;
 
 import org.spongepowered.api.entity.player.Player;

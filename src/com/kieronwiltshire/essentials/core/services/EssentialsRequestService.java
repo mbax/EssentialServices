@@ -1,9 +1,17 @@
+/**
+ * The design of the request service is highly influenced from the
+ * DoubleCheck confirmation service that was created by Felix Schmidt.
+ */
 package com.kieronwiltshire.essentials.core.services;
 
 import com.google.common.base.Optional;
 import com.kieronwiltshire.essentials.core.api.RequestService;
 import com.kieronwiltshire.essentials.core.api.request.Request;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.event.message.CommandEvent;
+import org.spongepowered.api.util.command.CommandResult;
 
 import java.util.*;
 
@@ -90,6 +98,26 @@ public class EssentialsRequestService implements RequestService {
             }
         }
         return collection;
+    }
+
+    @Subscribe(order = Order.LATE)
+    private void onCommand(CommandEvent e) {
+        if (e.getSource() instanceof Player) {
+            if (e.getCommand().equalsIgnoreCase("confirm") || e.getCommand().equalsIgnoreCase("decline")) {
+                UUID id = UUID.fromString(e.getArguments().substring(0, e.getArguments().indexOf(' ')));
+                if (id != null) {
+                    if (this.getRequest(id).isPresent()) {
+                        e.setCancelled(true);
+                        e.setResult(CommandResult.empty());
+
+                        Request req = this.getRequest(id).get();
+
+                        if (e.getCommand().equalsIgnoreCase("confirm")) req.onAccept((Player) e.getSource());
+                        else req.onDecline((Player) e.getSource());
+                    }
+                }
+            }
+        }
     }
 
 }
