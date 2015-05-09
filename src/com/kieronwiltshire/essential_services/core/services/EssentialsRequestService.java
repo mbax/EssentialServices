@@ -28,10 +28,17 @@ public class EssentialsRequestService implements RequestService {
     }
 
     @Override
+    public void retract(Request request) {
+        if (this.requests.containsKey(request)) {
+            this.requests.remove(request);
+        }
+    }
+
+    @Override
     public void accept(Request request) {
         if (this.requests.containsKey(request)) {
             request.onAccept(this.requests.get(request));
-            this.requests.remove(request);
+            this.retract(request);
         }
     }
 
@@ -39,7 +46,7 @@ public class EssentialsRequestService implements RequestService {
     public void decline(Request request) {
         if (this.requests.containsKey(request)) {
             request.onDecline(this.requests.get(request));
-            this.requests.remove(request);
+            this.retract(request);
         }
     }
 
@@ -96,6 +103,11 @@ public class EssentialsRequestService implements RequestService {
         return collection;
     }
 
+    /*
+
+    TODO: Move this code out of the service, and register it somewhere else.
+          Services should not be registered as event listeners!
+
     @Subscribe(order = Order.LATE)
     private void onCommand(CommandEvent e) {
         if (e.getSource() instanceof Player) {
@@ -115,5 +127,6 @@ public class EssentialsRequestService implements RequestService {
             }
         }
     }
+    */
 
 }

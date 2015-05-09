@@ -18,6 +18,13 @@ public interface RequestService {
     void send(Player recipient, Request request);
 
     /**
+     * Retract a pending request
+     *
+     * @param request The request
+     */
+    void retract(Request request);
+
+    /**
      * Accept a request
      *
      * @param request The request
