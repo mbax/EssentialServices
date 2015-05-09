@@ -82,6 +82,6 @@ public interface RequestService {
      * @param type The type of request
      * @return The recipients with currently pending requests of the specified type
      */
-    Collection<Player> getRecipients(Class<Request> type);
+    <T extends Request> Collection<Player> getRecipients(Class<T> type);
 
 }

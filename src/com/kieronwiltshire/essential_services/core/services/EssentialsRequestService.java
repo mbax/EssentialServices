@@ -92,7 +92,7 @@ public class EssentialsRequestService implements RequestService {
     }
 
     @Override
-    public Collection<Player> getRecipients(Class<Request> type) {
+    public <T extends Request> Collection<Player> getRecipients(Class<T> type) {
         Set<Player> collection = new HashSet<Player>();
         for(Iterator<Request> iter = this.requests.keySet().iterator(); iter.hasNext();) {
             Request req = iter.next();
