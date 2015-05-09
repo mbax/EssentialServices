@@ -6,6 +6,8 @@ import com.google.common.eventbus.Subscribe;
 import com.kieronwiltshire.essential_services.core.api.ChatService;
 import com.kieronwiltshire.essential_services.core.api.chat.Channel;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.chat.ChatTypes;
 
 import java.util.*;
 
@@ -21,11 +23,18 @@ public class EssentialsChatService implements ChatService {
     }
 
     @Override
+    public void send(Channel channel, Text message) throws NullPointerException {
+        for (Player p : this.getPlayers(channel)) {
+            p.sendMessage(ChatTypes.CHAT, message);
+        }
+    }
+
+    @Override
     public void join(Channel channel, Player player) {
         if (this.channels.containsKey(channel)) {
             Collection<Player> collection = this.channels.get(channel);
             if (!collection.contains(player)) {
-                if (collection.size() < channel.capacity()) {
+                if (collection.size() < channel.capacity() || channel.capacity() < 0) {
                     collection.add(player);
                 }
             }

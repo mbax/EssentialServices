@@ -3,11 +3,20 @@ package com.kieronwiltshire.essential_services.core.api;
 import com.google.common.base.Optional;
 import com.kieronwiltshire.essential_services.core.api.chat.Channel;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.text.Text;
 
 import java.util.Collection;
 import java.util.UUID;
 
 public interface ChatService {
+
+    /**
+     * Send a message to a channel
+     *
+     * @param channel The channel
+     * @param message The message
+     */
+    void send(Channel channel, Text message);
 
     /**
      * Add a player to a specific channel

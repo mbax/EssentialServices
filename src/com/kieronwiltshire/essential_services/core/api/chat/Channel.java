@@ -10,20 +10,6 @@ import java.util.Collection;
 public interface Channel extends Identifiable {
 
     /**
-     * Get the name
-     *
-     * @return The name of the channel
-     */
-    Optional<String> name();
-
-    /**
-     * Get the prefix
-     *
-     * @return The prefix of the Channel
-     */
-    Optional<Text> prefix();
-
-    /**
      * Get the capacity
      *
      * @return The capacity of the channel
