@@ -1,11 +1,10 @@
 package com.kieronwiltshire.essential_services.core.services;
 
-import com.google.common.base.*;
 import com.google.common.base.Optional;
-import com.google.common.eventbus.Subscribe;
-import com.kieronwiltshire.essential_services.core.api.ChatService;
-import com.kieronwiltshire.essential_services.core.api.chat.Channel;
+import com.kieronwiltshire.essential_services.core.api.services.ChatService;
+import com.kieronwiltshire.essential_services.core.api.services.chat.Channel;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.player.User;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.chat.ChatTypes;
 
@@ -13,46 +12,50 @@ import java.util.*;
 
 public class EssentialsChatService implements ChatService {
 
-    private HashMap<Channel, Collection<Player>> channels;
+    private HashMap<Channel, Collection<User>> channels;
 
     /**
      * EssentialsChatService constructor
      */
     public EssentialsChatService() {
-        this.channels = new HashMap<Channel, Collection<Player>>();
+        this.channels = new HashMap<Channel, Collection<User>>();
     }
 
     @Override
     public void send(Channel channel, Text message) throws NullPointerException {
-        for (Player p : this.getPlayers(channel)) {
-            p.sendMessage(ChatTypes.CHAT, message);
+        for (User user : this.getUsers(channel)) {
+            if (user.isOnline()) {
+                if (user.getPlayer().isPresent()) {
+                    user.getPlayer().get().sendMessage(ChatTypes.CHAT, message);
+                }
+            }
         }
     }
 
     @Override
-    public void join(Channel channel, Player player) {
+    public void join(Channel channel, User user) {
         if (this.channels.containsKey(channel)) {
-            Collection<Player> collection = this.channels.get(channel);
-            if (!collection.contains(player)) {
+            Collection<User> collection = this.channels.get(channel);
+            if (!collection.contains(user)) {
                 if (collection.size() < channel.capacity() || channel.capacity() < 0) {
-                    collection.add(player);
+                    collection.add(user);
                 }
             }
             return;
         }
 
-        List<Player> collection = new ArrayList<Player>();
-        collection.add(player);
+        List<User> collection = new ArrayList<User>();
+        collection.add(user);
 
         this.channels.put(channel, collection);
     }
 
     @Override
-    public void leave(Channel channel, Player player) {
+    public void leave(Channel channel, User user) {
         if (this.channels.containsKey(channel)) {
-            Collection<Player> collection = this.channels.get(channel);
-            if (collection.contains(player)) {
-                collection.remove(player);
+            Collection<User> collection = this.channels.get(channel);
+            if (collection.contains(user)) {
+                collection.remove(user);
             }
         }
     }
@@ -73,10 +76,10 @@ public class EssentialsChatService implements ChatService {
     }
 
     @Override
-    public Collection<Channel> getChannels(Player player) {
+    public Collection<Channel> getChannels(User user) {
         List<Channel> collection = new ArrayList<Channel>();
         for(Channel c : this.getChannels()) {
-            if (this.channels.get(c).contains(player)) {
+            if (this.channels.get(c).contains(user)) {
                 collection.add(c);
             }
         }
@@ -84,8 +87,8 @@ public class EssentialsChatService implements ChatService {
     }
 
     @Override
-    public Collection<Player> getPlayers() {
-        Set<Player> collection = new HashSet<Player>();
+    public Collection<User> getUsers() {
+        Set<User> collection = new HashSet<User>();
         for (Channel c : this.getChannels()) {
             collection.addAll(this.channels.get(c));
         }
@@ -93,7 +96,7 @@ public class EssentialsChatService implements ChatService {
     }
 
     @Override
-    public Collection<Player> getPlayers(Channel channel) throws NullPointerException {
+    public Collection<User> getUsers(Channel channel) throws NullPointerException {
         return this.channels.get(channel);
     }
 

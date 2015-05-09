@@ -1,13 +1,9 @@
 package com.kieronwiltshire.essential_services.core.services;
 
 import com.google.common.base.Optional;
-import com.kieronwiltshire.essential_services.core.api.RequestService;
-import com.kieronwiltshire.essential_services.core.api.request.Request;
+import com.kieronwiltshire.essential_services.core.api.services.RequestService;
+import com.kieronwiltshire.essential_services.core.api.services.request.Request;
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.message.CommandEvent;
-import org.spongepowered.api.util.command.CommandResult;
 
 import java.util.*;
 

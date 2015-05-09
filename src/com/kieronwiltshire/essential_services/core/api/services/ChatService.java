@@ -1,8 +1,9 @@
-package com.kieronwiltshire.essential_services.core.api;
+package com.kieronwiltshire.essential_services.core.api.services;
 
 import com.google.common.base.Optional;
-import com.kieronwiltshire.essential_services.core.api.chat.Channel;
+import com.kieronwiltshire.essential_services.core.api.services.chat.Channel;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.player.User;
 import org.spongepowered.api.text.Text;
 
 import java.util.Collection;
@@ -22,17 +23,17 @@ public interface ChatService {
      * Add a player to a specific channel
      *
      * @param channel The channel
-     * @param player The player
+     * @param user The user
      */
-    void join(Channel channel, Player player);
+    void join(Channel channel, User user);
 
     /**
      * Remove a player from a specific channel
      *
      * @param channel The channel
-     * @param player The player
+     * @param user The user
      */
-    void leave(Channel channel, Player player);
+    void leave(Channel channel, User user);
 
     /**
      * Get a channel
@@ -52,24 +53,24 @@ public interface ChatService {
     /**
      * Get all of the channels
      *
-     * @param player The player
+     * @param user The user
      * @return All of the channels that the player is in
      */
-    Collection<Channel> getChannels(Player player);
+    Collection<Channel> getChannels(User user);
 
     /**
-     * Get all players
+     * Get all users
      *
-     * @return Get all of the players within a channel
+     * @return Get all of the users within a channel
      */
-    Collection<Player> getPlayers();
+    Collection<User> getUsers();
 
     /**
-     * Get all players
+     * Get all users
      *
      * @param channel The channel
-     * @return Get all of the players within the specified channel
+     * @return Get all of the users within the specified channel
      */
-    Collection<Player> getPlayers(Channel channel);
+    Collection<User> getUsers(Channel channel);
 
 }

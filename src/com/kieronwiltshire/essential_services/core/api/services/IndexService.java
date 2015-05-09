@@ -1,7 +1,7 @@
-package com.kieronwiltshire.essential_services.core.api;
+package com.kieronwiltshire.essential_services.core.api.services;
 
 import com.google.common.base.Optional;
-import com.kieronwiltshire.essential_services.core.api.index.Index;
+import com.kieronwiltshire.essential_services.core.api.services.index.Index;
 
 import java.util.Collection;
 
