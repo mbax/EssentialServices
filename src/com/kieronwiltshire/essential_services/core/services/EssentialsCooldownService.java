@@ -106,13 +106,16 @@ public class EssentialsCooldownService implements CooldownService {
 
     @Override
     public boolean isAvailable(User user, Object object, long time) {
-        boolean available = true;
-        if (this.userCooldowns.containsKey(user)) {
-            if (this.userCooldowns.get(user).containsKey(object)) {
-                if (this.userCooldowns.get(user).get(object) + time <= System.currentTimeMillis()) {
-                    this.userCooldowns.get(user).remove(object);
-                } else {
-                    available = false;
+        boolean available = false;
+        if (this.isAvailable(object, time)) {
+            available = true;
+            if (this.userCooldowns.containsKey(user)) {
+                if (this.userCooldowns.get(user).containsKey(object)) {
+                    if (this.userCooldowns.get(user).get(object) + time <= System.currentTimeMillis()) {
+                        this.userCooldowns.get(user).remove(object);
+                    } else {
+                        available = false;
+                    }
                 }
             }
         }
@@ -121,13 +124,16 @@ public class EssentialsCooldownService implements CooldownService {
 
     @Override
     public boolean isAvailable(User user, Class object, long time) {
-        boolean available = true;
-        if (this.userCooldowns.containsKey(user)) {
-            if (this.userCooldowns.get(user).containsKey(object)) {
-                if (this.userCooldowns.get(user).get(object) + time <= System.currentTimeMillis()) {
-                    this.userCooldowns.get(user).remove(object);
-                } else {
-                    available = false;
+        boolean available = false;
+        if (this.isAvailable(object, time)) {
+            available = true;
+            if (this.userCooldowns.containsKey(user)) {
+                if (this.userCooldowns.get(user).containsKey(object)) {
+                    if (this.userCooldowns.get(user).get(object) + time <= System.currentTimeMillis()) {
+                        this.userCooldowns.get(user).remove(object);
+                    } else {
+                        available = false;
+                    }
                 }
             }
         }
