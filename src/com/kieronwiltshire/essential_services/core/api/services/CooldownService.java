@@ -32,7 +32,7 @@ public interface CooldownService {
      * @param user The user
      * @param clazz The class
      */
-    void cooldown(User user, Class clazz);
+    void cooldown(User user, Class<?> clazz);
 
     /**
      * Retract an object

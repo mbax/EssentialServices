@@ -31,7 +31,7 @@ public class EssentialsCooldownService implements CooldownService {
     }
 
     @Override
-    public void cooldown(Class clazz) {
+    public void cooldown(Class<?> clazz) {
         this.objectCooldowns.put(clazz, System.currentTimeMillis());
     }
 
@@ -44,7 +44,7 @@ public class EssentialsCooldownService implements CooldownService {
     }
 
     @Override
-    public void cooldown(User user, Class clazz) {
+    public void cooldown(User user, Class<?> clazz) {
         this.cooldown(user, clazz);
     }
 
@@ -54,7 +54,7 @@ public class EssentialsCooldownService implements CooldownService {
     }
 
     @Override
-    public void retract(Class clazz) {
+    public void retract(Class<?> clazz) {
         this.retract(this.objectCooldowns, clazz);
     }
 
@@ -80,7 +80,7 @@ public class EssentialsCooldownService implements CooldownService {
     }
 
     @Override
-    public void retract(User user, Class clazz) {
+    public void retract(User user, Class<?> clazz) {
         if (this.userCooldowns.containsKey(user)) {
             if (this.userCooldowns.get(user).containsKey(clazz)) {
                 this.userCooldowns.get(user).remove(clazz);
@@ -94,7 +94,7 @@ public class EssentialsCooldownService implements CooldownService {
     }
 
     @Override
-    public boolean isAvailable(Class clazz, long time) {
+    public boolean isAvailable(Class<?> clazz, long time) {
         return this.isAvailable(this.objectCooldowns, clazz, time);
     }
 
@@ -137,7 +137,7 @@ public class EssentialsCooldownService implements CooldownService {
     }
 
     @Override
-    public boolean isAvailable(User user, Class clazz, long time) {
+    public boolean isAvailable(User user, Class<?> clazz, long time) {
         boolean available = false;
         if (this.isAvailable(clazz, time)) {
             available = true;
