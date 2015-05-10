@@ -3,103 +3,105 @@ package com.kieronwiltshire.essential_services.core.api.services;
 import org.spongepowered.api.entity.player.User;
 
 public interface CooldownService {
-
     /**
-     * Add an object to the cooldown
+     * Adds a cooldown for an object.
      *
-     * @param object The object
+     * @param object the object to be added
      */
     void cooldown(Object object);
 
     /**
-     * Add a class to the cooldown
+     * Adds a cooldown for a class.
      *
-     * @param clazz The class
+     * @param clazz the class to be added
      */
     void cooldown(Class<?> clazz);
 
     /**
-     * Add an object to the cooldown
+     * Adds a user-specific cooldown for an object.
      *
-     * @param user The user
-     * @param object The object
+     * @param user the user affected by the cooldown
+     * @param object the object to be added
      */
     void cooldown(User user, Object object);
 
     /**
-     * Add a class to the cooldown
+     * Adds a user-specific cooldown for a class.
      *
-     * @param user The user
-     * @param clazz The class
+     * @param user the user affected by the cooldown
+     * @param clazz the class to be added
      */
     void cooldown(User user, Class<?> clazz);
 
     /**
-     * Retract an object
+     * Removes a cooldown for an object.
      *
-     * @param object The object
+     * @param object the object for which the cooldown is removed
      */
     void retract(Object object);
 
     /**
-     * Retract a class
+     * Removes a cooldown for a class.
      *
-     * @param clazz The class
+     * @param clazz the class for which the cooldown is removed
      */
     void retract(Class<?> clazz);
 
     /**
-     * Retract an object
+     * Removes a user-specific cooldown for an object.
      *
-     * @param user The user
-     * @param object The object
+     * @param user the user affected by the cooldown
+     * @param object the object for which the cooldown is removed
      */
     void retract(User user, Object object);
 
     /**
-     * Retract a class
+     * Removes a user-specific cooldown for a class.
      *
-     * @param user The user
-     * @param clazz The class
+     * @param user the user affected by the cooldown
+     * @param clazz the class for which the cooldown is removed
      */
     void retract(User user, Class<?> clazz);
 
     /**
-     * Check if an object is available
+     * Checks if an object is affected currently by a cooldown of a provided
+     * time.
      *
-     * @param object The object
-     * @param time The time in milliseconds
-     * @return True if the object is available for use
+     * @param object the object potentially affected by a cooldown
+     * @param time milliseconds of cooldown
+     * @return true if the object is not affected
      */
     boolean isAvailable(Object object, long time);
 
     /**
-     * Check if a class is available
+     * Checks if a class is affected currently by a cooldown of a provided
+     * time.
      *
-     * @param clazz The class
-     * @param time The time in milliseconds
-     * @return True if the class is available for use
+     * @param clazz the class potentially affected by a cooldown
+     * @param time milliseconds of cooldown
+     * @return true if the object is not affected
      */
     boolean isAvailable(Class<?> clazz, long time);
 
     /**
-     * Check if an object is available
+     * Checks if a user and related object are affected currently by a
+     * cooldown of a given time.
      *
-     * @param user The user
-     * @param object The object
-     * @param time The time in milliseconds
-     * @return True if the object is available for use
+     * @param user the user potentially affected by a cooldown
+     * @param object the object potentially affected by a cooldown
+     * @param time milliseconds of cooldown
+     * @return true if the object is not affected
      */
     boolean isAvailable(User user, Object object, long time);
 
     /**
-     * Check if a class is available
+     * Checks if a user and related class are affected currently by a
+     * cooldown of a given time.
      *
-     * @param user The user
-     * @param clazz The class
-     * @param time The time in milliseconds
-     * @return True if the class is available for use
+     * @param user the user potentially affected by a cooldown
+     * @param clazz the class potentially affected by a cooldown
+     * @param time milliseconds of cooldown
+     * @return true if the object is not affected
      */
     boolean isAvailable(User user, Class<?> clazz, long time);
-
 }

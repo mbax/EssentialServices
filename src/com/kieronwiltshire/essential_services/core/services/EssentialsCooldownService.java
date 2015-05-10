@@ -4,159 +4,106 @@ import com.kieronwiltshire.essential_services.core.api.services.CooldownService;
 import org.spongepowered.api.entity.player.User;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
  * TODO: This may need some work
  */
 public class EssentialsCooldownService implements CooldownService {
+    private final Map<Object, Long> objectCooldowns;
+    private final Map<User, Map<Object, Long>> userCooldowns; // TODO store when user leaves, don't keep in memory
 
-    private HashMap<Object, Long> instanceCooldowns;
-    private HashMap<Class, Long> objectCooldowns;
-    private HashMap<User, HashMap<Object, Long>> userCooldowns;
-
-    /**
-     * EssentialsCooldownService constructor
-     */
     public EssentialsCooldownService() {
-        this.instanceCooldowns = new HashMap<Object, Long>();
-        this.objectCooldowns = new HashMap<Class, Long>();
-        this.userCooldowns = new HashMap<User, HashMap<Object, Long>>();
+        this.objectCooldowns = new HashMap<>();
+        this.userCooldowns = new HashMap<>();
     }
 
     @Override
     public void cooldown(Object object) {
-        this.instanceCooldowns.put(object, System.currentTimeMillis());
+        synchronized (this.objectCooldowns) {
+            this.objectCooldowns.put(object, System.currentTimeMillis());
+        }
     }
 
     @Override
     public void cooldown(Class<?> clazz) {
-        this.objectCooldowns.put(clazz, System.currentTimeMillis());
+        this.cooldown((Object) clazz);
     }
 
     @Override
     public void cooldown(User user, Object object) {
-        if (!this.userCooldowns.containsKey(user)) {
-            this.userCooldowns.put(user, new HashMap<Object, Long>());
+        synchronized (this.userCooldowns) {
+            Map<Object, Long> map = this.userCooldowns.get(user);
+            if (map == null) {
+                map = new HashMap<>();
+                this.userCooldowns.put(user, map);
+            }
+            map.put(object, System.currentTimeMillis());
         }
-        this.userCooldowns.get(user).put(object, System.currentTimeMillis());
     }
 
     @Override
     public void cooldown(User user, Class<?> clazz) {
-        this.cooldown(user, clazz);
+        this.cooldown(user, (Object) clazz);
     }
 
     @Override
     public void retract(Object object) {
-        this.retract(this.instanceCooldowns, object);
-    }
-
-    @Override
-    public void retract(Class<?> clazz) {
-        this.retract(this.objectCooldowns, clazz);
-    }
-
-    /**
-     * Remove an key value from the map
-     *
-     * @param map The map
-     * @param object The object
-     */
-    private void retract(HashMap<?, ?> map, Object object) {
-        if (map.containsKey(object)) {
-            map.remove(object);
+        synchronized (this.objectCooldowns) {
+            this.objectCooldowns.remove(object);
         }
     }
 
     @Override
+    public void retract(Class<?> clazz) {
+        this.retract((Object) clazz);
+    }
+
+    @Override
     public void retract(User user, Object object) {
-        if (this.userCooldowns.containsKey(user)) {
-            if (this.userCooldowns.get(user).containsKey(object)) {
-                this.userCooldowns.get(user).remove(object);
+        synchronized (this.userCooldowns) {
+            Map<Object, Long> map = this.userCooldowns.get(user);
+            if (map != null) {
+                map.remove(object);
+                if (map.isEmpty()) {
+                    this.userCooldowns.remove(user);
+                }
             }
         }
     }
 
     @Override
     public void retract(User user, Class<?> clazz) {
-        if (this.userCooldowns.containsKey(user)) {
-            if (this.userCooldowns.get(user).containsKey(clazz)) {
-                this.userCooldowns.get(user).remove(clazz);
-            }
-        }
+        this.retract(user, (Object) clazz);
     }
 
     @Override
     public boolean isAvailable(Object object, long time) {
-        return this.isAvailable(this.instanceCooldowns, object, time);
+        synchronized (this.objectCooldowns) {
+            Long lastUsed = this.objectCooldowns.get(object);
+            return lastUsed == null || lastUsed + time < System.currentTimeMillis();
+        }
     }
 
     @Override
     public boolean isAvailable(Class<?> clazz, long time) {
-        return this.isAvailable(this.objectCooldowns, clazz, time);
-    }
-
-    /**
-     * Check if an object is available
-     *
-     * @param map The map
-     * @param object The object
-     * @param time The time in milliseconds
-     * @return True if the object is available for use
-     */
-    private boolean isAvailable(HashMap<?, Long> map, Object object, long time) {
-        boolean available = true;
-        if (map.containsKey(object)) {
-            if (map.get(object) + time <= System.currentTimeMillis()) {
-                map.remove(object);
-            } else {
-                available = false;
-            }
-        }
-        return available;
+        return this.isAvailable((Object) clazz, time);
     }
 
     @Override
     public boolean isAvailable(User user, Object object, long time) {
-        boolean available = false;
-        if (this.isAvailable(object, time)) {
-            available = true;
-            if (this.userCooldowns.containsKey(user)) {
-                if (this.userCooldowns.get(user).containsKey(object)) {
-                    if (this.userCooldowns.get(user).get(object) + time <= System.currentTimeMillis()) {
-                        this.userCooldowns.get(user).remove(object);
-                    } else {
-                        available = false;
-                    }
-                }
+        synchronized (this.userCooldowns) {
+            Map<Object, Long> map = this.userCooldowns.get(user);
+            if (map != null) {
+                Long lastUsed = map.get(object);
+                return lastUsed == null || lastUsed + time < System.currentTimeMillis();
             }
         }
-        return available;
+        return true;
     }
 
     @Override
     public boolean isAvailable(User user, Class<?> clazz, long time) {
-        boolean available = false;
-        if (this.isAvailable(clazz, time)) {
-            available = true;
-            if (this.userCooldowns.containsKey(user)) {
-                for (Iterator<Object> iter = this.userCooldowns.get(user).keySet().iterator(); iter.hasNext();) {
-                    Object o = iter.next();
-
-                    if (o.equals(clazz) || o.getClass().isInstance(clazz)) {
-                        if (this.userCooldowns.get(user).get(o) + time <= System.currentTimeMillis()) {
-                            iter.remove();
-                        } else {
-                            available = false;
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        return available;
+        return this.isAvailable(user, (Object) clazz, time);
     }
-
 }
