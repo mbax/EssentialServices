@@ -4,6 +4,8 @@ import com.kieronwiltshire.essential_services.core.api.services.CooldownService;
 import org.spongepowered.api.entity.player.User;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * TODO: This may need some work
@@ -29,8 +31,8 @@ public class EssentialsCooldownService implements CooldownService {
     }
 
     @Override
-    public void cooldown(Class object) {
-        this.objectCooldowns.put(object, System.currentTimeMillis());
+    public void cooldown(Class clazz) {
+        this.objectCooldowns.put(clazz, System.currentTimeMillis());
     }
 
     @Override
@@ -42,21 +44,29 @@ public class EssentialsCooldownService implements CooldownService {
     }
 
     @Override
-    public void cooldown(User user, Class object) {
-        this.cooldown(user, object);
+    public void cooldown(User user, Class clazz) {
+        this.cooldown(user, clazz);
     }
 
     @Override
     public void retract(Object object) {
-        if (this.instanceCooldowns.containsKey(object)) {
-            this.instanceCooldowns.remove(object);
-        }
+        this.retract(this.instanceCooldowns, object);
     }
 
     @Override
-    public void retract(Class object) {
-        if (this.objectCooldowns.containsKey(object)) {
-            this.objectCooldowns.remove(object);
+    public void retract(Class clazz) {
+        this.retract(this.objectCooldowns, clazz);
+    }
+
+    /**
+     * Remove an key value from the map
+     *
+     * @param map The map
+     * @param object The object
+     */
+    private void retract(HashMap<?, ?> map, Object object) {
+        if (map.containsKey(object)) {
+            map.remove(object);
         }
     }
 
@@ -70,33 +80,37 @@ public class EssentialsCooldownService implements CooldownService {
     }
 
     @Override
-    public void retract(User user, Class object) {
+    public void retract(User user, Class clazz) {
         if (this.userCooldowns.containsKey(user)) {
-            if (this.userCooldowns.get(user).containsKey(object)) {
-                this.userCooldowns.get(user).remove(object);
+            if (this.userCooldowns.get(user).containsKey(clazz)) {
+                this.userCooldowns.get(user).remove(clazz);
             }
         }
     }
 
     @Override
     public boolean isAvailable(Object object, long time) {
-        boolean available = true;
-        if (this.instanceCooldowns.containsKey(object)) {
-            if (this.instanceCooldowns.get(object) + time <= System.currentTimeMillis()) {
-                this.instanceCooldowns.remove(object);
-            } else {
-                available = false;
-            }
-        }
-        return available;
+        return this.isAvailable(this.instanceCooldowns, object, time);
     }
 
     @Override
-    public boolean isAvailable(Class object, long time) {
+    public boolean isAvailable(Class clazz, long time) {
+        return this.isAvailable(this.objectCooldowns, clazz, time);
+    }
+
+    /**
+     * Check if an object is available
+     *
+     * @param map The map
+     * @param object The object
+     * @param time The time in milliseconds
+     * @return True if the object is available for use
+     */
+    private boolean isAvailable(HashMap<?, Long> map, Object object, long time) {
         boolean available = true;
-        if (this.objectCooldowns.containsKey(object)) {
-            if (this.objectCooldowns.get(object) + time <= System.currentTimeMillis()) {
-                this.objectCooldowns.remove(object);
+        if (map.containsKey(object)) {
+            if (map.get(object) + time <= System.currentTimeMillis()) {
+                map.remove(object);
             } else {
                 available = false;
             }
@@ -123,16 +137,21 @@ public class EssentialsCooldownService implements CooldownService {
     }
 
     @Override
-    public boolean isAvailable(User user, Class object, long time) {
+    public boolean isAvailable(User user, Class clazz, long time) {
         boolean available = false;
-        if (this.isAvailable(object, time)) {
+        if (this.isAvailable(clazz, time)) {
             available = true;
             if (this.userCooldowns.containsKey(user)) {
-                if (this.userCooldowns.get(user).containsKey(object)) {
-                    if (this.userCooldowns.get(user).get(object) + time <= System.currentTimeMillis()) {
-                        this.userCooldowns.get(user).remove(object);
-                    } else {
-                        available = false;
+                for (Iterator<Object> iter = this.userCooldowns.get(user).keySet().iterator(); iter.hasNext();) {
+                    Object o = iter.next();
+
+                    if (o.equals(clazz) || o.getClass().isInstance(clazz)) {
+                        if (this.userCooldowns.get(user).get(o) + time <= System.currentTimeMillis()) {
+                            iter.remove();
+                        } else {
+                            available = false;
+                        }
+                        break;
                     }
                 }
             }

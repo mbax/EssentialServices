@@ -12,11 +12,11 @@ public interface CooldownService {
     void cooldown(Object object);
 
     /**
-     * Add an object to the cooldown
+     * Add a class to the cooldown
      *
-     * @param object The object
+     * @param clazz The class
      */
-    void cooldown(Class object);
+    void cooldown(Class<?> clazz);
 
     /**
      * Add an object to the cooldown
@@ -27,12 +27,12 @@ public interface CooldownService {
     void cooldown(User user, Object object);
 
     /**
-     * Add an object to the cooldown
+     * Add a class to the cooldown
      *
      * @param user The user
-     * @param object The object
+     * @param clazz The class
      */
-    void cooldown(User user, Class object);
+    void cooldown(User user, Class clazz);
 
     /**
      * Retract an object
@@ -42,11 +42,11 @@ public interface CooldownService {
     void retract(Object object);
 
     /**
-     * Retract an object
+     * Retract a class
      *
-     * @param object The object
+     * @param clazz The class
      */
-    void retract(Class object);
+    void retract(Class<?> clazz);
 
     /**
      * Retract an object
@@ -57,12 +57,12 @@ public interface CooldownService {
     void retract(User user, Object object);
 
     /**
-     * Retract an object
+     * Retract a class
      *
      * @param user The user
-     * @param object The object
+     * @param clazz The class
      */
-    void retract(User user, Class object);
+    void retract(User user, Class<?> clazz);
 
     /**
      * Check if an object is available
@@ -74,13 +74,13 @@ public interface CooldownService {
     boolean isAvailable(Object object, long time);
 
     /**
-     * Check if an object is available
+     * Check if a class is available
      *
-     * @param object The object
+     * @param clazz The class
      * @param time The time in milliseconds
-     * @return True if the object is available for use
+     * @return True if the class is available for use
      */
-    boolean isAvailable(Class object, long time);
+    boolean isAvailable(Class<?> clazz, long time);
 
     /**
      * Check if an object is available
@@ -93,13 +93,13 @@ public interface CooldownService {
     boolean isAvailable(User user, Object object, long time);
 
     /**
-     * Check if an object is available
+     * Check if a class is available
      *
      * @param user The user
-     * @param object The object
+     * @param clazz The class
      * @param time The time in milliseconds
-     * @return True if the object is available for use
+     * @return True if the class is available for use
      */
-    boolean isAvailable(User user, Class object, long time);
+    boolean isAvailable(User user, Class<?> clazz, long time);
 
 }
