@@ -4,22 +4,23 @@ import com.google.common.base.Optional;
 import com.kieronwiltshire.essential_services.core.api.services.RequestService;
 import com.kieronwiltshire.essential_services.core.api.services.request.Request;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.player.User;
 
 import java.util.*;
 
 public class EssentialsRequestService implements RequestService {
 
-    private HashMap<Request, Player> requests;
+    private HashMap<Request, User> requests;
 
     /**
      * EssentialsRequestService constructor
      */
     public EssentialsRequestService() {
-        this.requests = new HashMap<Request, Player>();
+        this.requests = new HashMap<Request, User>();
     }
 
     @Override
-    public void send(Player recipient, Request request) {
+    public void send(User recipient, Request request) {
         this.requests.put(request, recipient);
     }
 
@@ -31,19 +32,29 @@ public class EssentialsRequestService implements RequestService {
     }
 
     @Override
-    public void accept(Request request) {
+    public boolean accept(Request request) {
         if (this.requests.containsKey(request)) {
-            request.onAccept(this.requests.get(request));
-            this.retract(request);
+            User u = this.requests.get(request);
+            if (u.getPlayer().isPresent()) {
+                request.onAccept(u.getPlayer().get());
+                this.requests.remove(request);
+                return true;
+            }
         }
+        return false;
     }
 
     @Override
-    public void decline(Request request) {
+    public boolean decline(Request request) {
         if (this.requests.containsKey(request)) {
-            request.onDecline(this.requests.get(request));
-            this.retract(request);
+            User u = this.requests.get(request);
+            if (u.getPlayer().isPresent()) {
+                request.onDecline(u.getPlayer().get());
+                this.requests.remove(request);
+                return true;
+            }
         }
+        return false;
     }
 
     @Override
@@ -63,7 +74,7 @@ public class EssentialsRequestService implements RequestService {
     }
 
     @Override
-    public Collection<Request> getRequests(Player source) {
+    public Collection<Request> getRequests(User source) {
         List<Request> collection = new ArrayList<Request>();
         for(Iterator<Request> iter = this.requests.keySet().iterator(); iter.hasNext();) {
             Request req = iter.next();
@@ -75,21 +86,21 @@ public class EssentialsRequestService implements RequestService {
     }
 
     @Override
-    public Optional<Player> getRecipient(Request request) {
+    public Optional<User> getRecipient(Request request) {
         if (this.requests.containsKey(request)) {
             return Optional.of(this.requests.get(request));
         }
-        return Optional.<Player>absent();
+        return Optional.<User>absent();
     }
 
     @Override
-    public Collection<Player> getRecipients() {
-        return new HashSet<Player>(this.requests.values());
+    public Collection<User> getRecipients() {
+        return new HashSet<User>(this.requests.values());
     }
 
     @Override
-    public <T extends Request> Collection<Player> getRecipients(Class<T> type) {
-        Set<Player> collection = new HashSet<Player>();
+    public <T extends Request> Collection<User> getRecipients(Class<T> type) {
+        Set<User> collection = new HashSet<User>();
         for(Iterator<Request> iter = this.requests.keySet().iterator(); iter.hasNext();) {
             Request req = iter.next();
             if (req.getClass().isInstance(type)) {
@@ -100,7 +111,6 @@ public class EssentialsRequestService implements RequestService {
     }
 
     /*
-
     TODO: Move this code out of the service, and register it somewhere else.
           Services should not be registered as event listeners!
 

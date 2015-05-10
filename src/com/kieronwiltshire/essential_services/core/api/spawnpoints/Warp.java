@@ -1,4 +1,4 @@
-package com.kieronwiltshire.essential_services.core.api.spawn_points;
+package com.kieronwiltshire.essential_services.core.api.spawnpoints;
 
 import com.google.common.base.Optional;
 import com.kieronwiltshire.essential_services.core.api.SpawnPoint;
